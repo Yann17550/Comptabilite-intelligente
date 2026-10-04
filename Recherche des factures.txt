@@ -1,0 +1,427 @@
+Recherche des factures
+# Projet : comptabilite-intelligente
+
+## Vision
+
+Construire un système capable d'identifier automatiquement les fournisseurs à partir des mouvements bancaires, découvrir où se trouvent leurs factures, les collecter, extraire les informations comptables et préparer leur intégration comptable.
+
+---
+
+# Principe Directeur
+
+Au lieu de partir des factures :
+
+```text
+Facture → Comptabilité
+```
+
+Nous partons de :
+
+```text
+Banque
+↓
+Fournisseur
+↓
+Source de facture
+↓
+Collecte
+↓
+Analyse
+↓
+Comptabilité
+```
+
+---
+
+# MVP
+
+Objectif :
+
+✅ Identifier les fournisseurs
+
+✅ Découvrir où sont les factures
+
+✅ Automatiser la collecte
+
+✅ Constituer une base documentaire propre
+
+Tout le reste est secondaire.
+
+---
+
+# Sprint 0 — Fondations
+
+## Objectif
+
+Préparer le socle technique.
+
+## Livrables
+
+- [ ] Projet Supabase créé
+- [ ] Dépôt Git créé
+- [ ] Structure du projet définie
+- [ ] Authentification opérationnelle
+- [ ] Base PostgreSQL créée
+
+## Tables
+
+- [ ] suppliers
+- [ ] bank_transactions
+- [ ] documents
+
+## Critère de validation
+
+✅ Une base propre existe et peut recevoir des données.
+
+---
+
+# Sprint 1 — Import Bancaire
+
+## Objectif
+
+Importer les mouvements de compte.
+
+## Livrables
+
+- [ ] Import CSV Crédit Agricole
+- [ ] Import CSV Banque Populaire
+- [ ] Import CSV Qonto (optionnel)
+- [ ] Historique stocké en base
+
+## Validation
+
+- [ ] 100 % des lignes importées
+- [ ] Aucun doublon
+- [ ] Montants cohérents
+
+## Critère de validation
+
+✅ Tous les mouvements sont visibles dans l'application.
+
+---
+
+# Sprint 2 — Détection Fournisseurs
+
+## Objectif
+
+Transformer les lignes bancaires en fournisseurs.
+
+## Exemple
+
+```text
+AMZN EU SARL
+```
+
+↓
+
+```text
+Amazon
+```
+
+## Livrables
+
+- [ ] Normalisation des libellés
+- [ ] Fusion des variantes
+- [ ] Création automatique des fournisseurs
+
+## Validation
+
+- [ ] Amazon reconnu
+- [ ] Ouest Frais reconnu
+- [ ] Edenred reconnu
+- [ ] Stripe reconnu
+
+## Critère de validation
+
+✅ Chaque transaction est rattachée à un fournisseur.
+
+---
+
+# Sprint 3 — Cartographie Fournisseurs
+
+## Objectif
+
+Créer une fiche fournisseur enrichie.
+
+## Informations
+
+- [ ] Nom
+- [ ] Catégorie
+- [ ] Nombre de transactions
+- [ ] Montant annuel
+- [ ] Dernière transaction
+
+## Statuts
+
+- [ ] Nouveau
+- [ ] A qualifier
+- [ ] Source identifiée
+- [ ] Automatisé
+
+## Critère de validation
+
+✅ Tous les fournisseurs connus apparaissent dans le référentiel.
+
+---
+
+# Sprint 4 — Qualification des Sources
+
+## Objectif
+
+Identifier où récupérer les factures.
+
+## Types
+
+- [ ] Email
+- [ ] Site web
+- [ ] API
+- [ ] Manuel
+
+## Exemples attendus
+
+| Fournisseur | Source |
+|------------|---------|
+| Ouest Frais | Email |
+| Italgastronomie | Email |
+| Amazon | Web |
+| OVH | API |
+
+## Critère de validation
+
+✅ Chaque fournisseur possède une stratégie de récupération.
+
+---
+
+# Sprint 5 — Collecte Email
+
+## Objectif
+
+Récupérer automatiquement les factures reçues par email.
+
+## Cibles prioritaires
+
+- [ ] Ouest Frais
+- [ ] Italgastronomie
+
+## Workflow
+
+```text
+Email
+↓
+Détection
+↓
+Téléchargement PDF
+↓
+Archivage
+```
+
+## Validation
+
+- [ ] PDF détecté
+- [ ] PDF téléchargé
+- [ ] PDF associé au fournisseur
+
+## Critère de validation
+
+✅ Première facture importée automatiquement.
+
+---
+
+# Sprint 6 — Gestion Documentaire
+
+## Objectif
+
+Centraliser et organiser les documents.
+
+## Livrables
+
+- [ ] Stockage Supabase
+- [ ] Classement automatique
+- [ ] Détection de doublons
+- [ ] Métadonnées
+
+## Structure visée
+
+```text
+2026
+ ├── Amazon
+ ├── Ouest Frais
+ ├── Italgastronomie
+```
+
+## Critère de validation
+
+✅ Toutes les factures sont retrouvables en quelques secondes.
+
+---
+
+# Sprint 7 — Extraction Factures
+
+## Objectif
+
+Lire automatiquement les PDF.
+
+## Données extraites
+
+- [ ] Date
+- [ ] Numéro facture
+- [ ] Fournisseur
+- [ ] HT
+- [ ] TVA
+- [ ] TTC
+
+## Bonus
+
+- [ ] Lignes détaillées
+
+## Critère de validation
+
+✅ Une facture PDF devient un document structuré.
+
+---
+
+# Sprint 8 — Réconciliation Bancaire
+
+## Objectif
+
+Associer paiement et facture.
+
+## Exemple
+
+```text
+AMAZON 52,51 €
+```
+
+↓
+
+```text
+Facture Amazon 52,51 €
+```
+
+## Validation
+
+- [ ] Matching automatique
+- [ ] Matching manuel possible
+- [ ] Taux de réussite > 90 %
+
+## Critère de validation
+
+✅ Chaque dépense possède sa facture.
+
+---
+
+# Sprint 9 — Collecte Web
+
+## Objectif
+
+Intégrer les fournisseurs nécessitant une connexion.
+
+## Cibles
+
+- [ ] Amazon
+- [ ] Canva
+- [ ] OpenAI
+- [ ] Autres fournisseurs SaaS
+
+## Workflow
+
+```text
+Connexion
+↓
+Historique
+↓
+Factures
+↓
+Téléchargement
+```
+
+## Critère de validation
+
+✅ Premier collecteur web opérationnel.
+
+---
+
+# Sprint 10 — Intelligence Fournisseur
+
+## Objectif
+
+Le système apprend au fil du temps.
+
+## Connaissances stockées
+
+- [ ] Fréquence
+- [ ] Typologie
+- [ ] Taux TVA
+- [ ] Source habituelle
+- [ ] Workflow
+
+## Critère de validation
+
+✅ Réduction progressive des interventions manuelles.
+
+---
+
+# Sprint 11 — Pré-Comptabilité
+
+## Objectif
+
+Préparer l'exploitation comptable.
+
+## Livrables
+
+- [ ] TVA calculée
+- [ ] Compte suggéré
+- [ ] Export CSV
+- [ ] Export FEC
+
+## Critère de validation
+
+✅ Une facture est prête à être comptabilisée.
+
+---
+
+# Tableau Global de Validation
+
+| Sprint | Statut |
+|----------|----------|
+| Sprint 0 - Fondations | ⬜ |
+| Sprint 1 - Import bancaire | ⬜ |
+| Sprint 2 - Détection fournisseurs | ⬜ |
+| Sprint 3 - Cartographie fournisseurs | ⬜ |
+| Sprint 4 - Qualification des sources | ⬜ |
+| Sprint 5 - Collecte Email | ⬜ |
+| Sprint 6 - Gestion documentaire | ⬜ |
+| Sprint 7 - Extraction factures | ⬜ |
+| Sprint 8 - Réconciliation bancaire | ⬜ |
+| Sprint 9 - Collecte Web | ⬜ |
+| Sprint 10 - Intelligence fournisseur | ⬜ |
+| Sprint 11 - Pré-comptabilité | ⬜ |
+
+---
+
+# Définition du MVP Réussi
+
+Le MVP est considéré terminé lorsque :
+
+- [ ] Les mouvements bancaires sont importés
+- [ ] Les fournisseurs sont automatiquement détectés
+- [ ] Chaque fournisseur possède une source connue
+- [ ] Les factures email sont récupérées automatiquement
+- [ ] Les PDF sont archivés
+- [ ] Les dépenses sont reliées à leur facture
+
+## Résultat attendu
+
+```text
+Banque
+↓
+Fournisseur identifié
+↓
+Facture trouvée
+↓
+PDF archivé
+↓
+Dépense justifiée
+```
+
+✅ Premier niveau d'automatisation documentaire atteint.
